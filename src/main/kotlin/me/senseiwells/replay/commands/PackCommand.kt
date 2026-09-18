@@ -9,7 +9,10 @@ import com.mojang.brigadier.suggestion.SuggestionsBuilder
 import net.casual.arcade.commands.CommandTree
 import net.casual.arcade.commands.argument
 import net.casual.arcade.commands.literal
-import net.casual.arcade.replay.ducks.ResourcePackTracker
+import net.casual.arcade.events.GlobalEventHandler
+import net.casual.arcade.events.server.player.PlayerClientboundPacketEvent
+import net.casual.arcade.events.server.player.PlayerDisconnectEvent
+import net.casual.arcade.events.utils.register
 import net.minecraft.commands.CommandBuildContext
 import net.minecraft.commands.CommandSourceStack
 import net.minecraft.commands.SharedSuggestionProvider
@@ -18,8 +21,30 @@ import net.minecraft.network.protocol.common.ClientboundResourcePackPopPacket
 import net.minecraft.network.protocol.common.ClientboundResourcePackPushPacket
 import java.util.*
 import java.util.concurrent.CompletableFuture
+import java.util.concurrent.ConcurrentHashMap
 
 object PackCommand: CommandTree<CommandSourceStack> {
+    private val pushedPacks = ConcurrentHashMap<UUID, MutableSet<UUID>>()
+
+    internal fun registerEvents() {
+        GlobalEventHandler.Server.register<PlayerClientboundPacketEvent>(
+            phase = PlayerClientboundPacketEvent.PHASE_POST
+        ) { (player, packet) ->
+            when (packet) {
+                is ClientboundResourcePackPushPacket -> {
+                    this.pushedPacks.getOrPut(player.uuid) { ConcurrentHashMap.newKeySet() }.add(packet.id)
+                }
+                is ClientboundResourcePackPopPacket -> {
+                    val packs = this.pushedPacks[player.uuid] ?: return@register
+                    packet.id.ifPresentOrElse(packs::remove, packs::clear)
+                }
+            }
+        }
+        GlobalEventHandler.Server.register<PlayerDisconnectEvent> { (_, profile) ->
+            this.pushedPacks.remove(profile.id)
+        }
+    }
+
     override fun create(buildContext: CommandBuildContext): LiteralArgumentBuilder<CommandSourceStack> {
         return CommandTree.buildLiteral("resource-pack") {
             literal("push") {
@@ -66,13 +91,12 @@ object PackCommand: CommandTree<CommandSourceStack> {
         return Command.SINGLE_SUCCESS
     }
 
-    @Suppress("UnstableApiUsage")
     private fun suggestPacks(
         context: CommandContext<CommandSourceStack>,
         builder: SuggestionsBuilder
     ): CompletableFuture<Suggestions> {
         val player = context.source.player ?: return Suggestions.empty()
-        val packs = (player.connection as ResourcePackTracker).arcade_getPacks()
-        return SharedSuggestionProvider.suggest(packs.map { it.id.toString() }, builder)
+        val packs = this.pushedPacks[player.uuid].orEmpty()
+        return SharedSuggestionProvider.suggest(packs.map { it.toString() }, builder)
     }
 }

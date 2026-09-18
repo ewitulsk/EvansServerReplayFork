@@ -51,6 +51,9 @@ object ServerReplay: ModInitializer {
         AutomaticRecorders.registerEvents()
         RecorderNotifier.registerEvents()
         RecorderRecoverer.registerEvents()
+        if (this.config.debug) {
+            PackCommand.registerEvents()
+        }
 
         GlobalEventHandler.Server.register<ServerRegisterCommandEvent> {
             it.register(ReplayCommand)
