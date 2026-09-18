@@ -34,7 +34,15 @@ However, there are also some downsides and known issues:
 
 ## Usage
 
-This mod requires the fabric launcher, fabric-api, and fabric-kotlin.
+This mod requires [Fabric Loader](https://fabricmc.net/use/server/), [Fabric API](https://modrinth.com/mod/fabric-api), and [Fabric Language Kotlin](https://modrinth.com/mod/fabric-language-kotlin).
+
+For Minecraft 26.3 (this branch) specifically:
+- [Fabric Loader](https://fabricmc.net/use/server/) `0.19.5` or newer
+- [Fabric API](https://modrinth.com/mod/fabric-api/versions) `0.160.7+26.3` or newer
+- [Fabric Language Kotlin](https://modrinth.com/mod/fabric-language-kotlin/versions) `1.14.1+kotlin.2.4.20` or newer
+
+The bundled `arcade` libraries are included inside the jar — no separate
+installation is needed for them.
 
 There are two ways of recording on the server, you can either configure it
 to follow and record players from their view. 
