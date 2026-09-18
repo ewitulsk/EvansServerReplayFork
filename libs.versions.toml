@@ -19,11 +19,13 @@ arcade-commands       = { module = "net.casualchampionships:arcade-commands"    
 arcade-event-registry = { module = "net.casualchampionships:arcade-event-registry"    , version.ref = "arcade" }
 arcade-events-server  = { module = "net.casualchampionships:arcade-events-server"     , version.ref = "arcade" }
 arcade-rph            = { module = "net.casualchampionships:arcade-resource-pack-host", version.ref = "arcade" }
+arcade-resource-pack  = { module = "net.casualchampionships:arcade-resource-pack"     , version.ref = "arcade" }
+arcade-extensions     = { module = "net.casualchampionships:arcade-extensions"        , version.ref = "arcade" }
 arcade-interceptor    = { module = "net.casualchampionships:arcade-interceptor"       , version.ref = "arcade" }
 arcade-utils          = { module = "net.casualchampionships:arcade-utils"             , version.ref = "arcade" }
 
 [bundles]
-arcade = ["arcade-replay", "arcade-commands", "arcade-event-registry", "arcade-events-server", "arcade-rph", "arcade-interceptor", "arcade-utils"]
+arcade = ["arcade-replay", "arcade-commands", "arcade-event-registry", "arcade-events-server", "arcade-rph", "arcade-resource-pack", "arcade-extensions", "arcade-interceptor", "arcade-utils"]
 
 [plugins]
 fabric-loom = { id = "net.fabricmc.fabric-loom"       , version.ref = "fabric-loom" }
