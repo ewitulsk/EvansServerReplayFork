@@ -22,7 +22,7 @@
     ]
   },
   "mixins": [
-
+    "serverreplay.mixins.json"
   ],
   "depends": {
     "minecraft": "${minecraft_dependency}",

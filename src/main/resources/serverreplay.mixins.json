@@ -1,0 +1,13 @@
+{
+  "required": true,
+  "package": "me.senseiwells.replay.mixin",
+  "compatibilityLevel": "JAVA_21",
+  "mixins": [
+    "FlashbackChunkedWriterAccessor",
+    "FlashbackChunkedWriterMixin",
+    "FlashbackWriterMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}
